@@ -1,0 +1,25 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Face dataset
+dataset/
+
+# Attendance records
+attendance.csv
+
+# DeepFace / model files
+*.h5
+*.keras
+*.pth
+*.onnx
+
+# Environment files
+.env
+
+# VS Code
+.vscode/
