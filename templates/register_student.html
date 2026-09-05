@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Student Registration</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/registration.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Student Registration</h1>
+
+        <p class="subtitle">
+            Register a student for face recognition
+        </p>
+
+
+        <!-- Student ID -->
+
+        <div class="form-group">
+
+            <label>Student ID</label>
+
+            <input type="text"
+                   id="student_id"
+                   placeholder="Enter Student ID">
+
+        </div>
+
+
+        <!-- Student Name -->
+
+        <div class="form-group">
+
+            <label>Student Name</label>
+
+            <input type="text"
+                   id="name"
+                   placeholder="Enter Student Name">
+
+        </div>
+
+
+        <!-- Camera -->
+
+        <h2>Face Capture</h2>
+
+        <video id="video"
+               width="400"
+               height="300"
+               autoplay>
+        </video>
+
+        <br><br>
+
+        <button type="button"
+                onclick="startCamera()">
+            Start Camera
+        </button>
+<button type="button"
+        onclick="captureImage()">
+    Capture Image
+</button>
+
+<p>
+    Images Captured:
+    <span id="count">0</span> / 20
+</p>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<div id="preview"></div>
+
+
+        <br><br>
+
+
+        <!-- Register -->
+
+        <button type="button"
+                onclick="registerStudent()">
+            Register Student
+        </button>
+
+
+        <p id="message"></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function startCamera() {
+
+    navigator.mediaDevices.getUserMedia({
+        video: true
+    })
+
+    .then(function(stream) {
+
+        document.getElementById("video").srcObject = stream;
+
+    })
+
+    .catch(function(error) {
+
+        console.log(error);
+
+        alert("Camera access denied or camera not available.");
+
+    });
+
+}
+
+let images = [];
+
+
+function captureImage() {
+
+    if (images.length >= 20) {
+        alert("Maximum 20 images reached!");
+        return;
+    }
+
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const image = canvas.toDataURL("image/jpeg");
+
+    images.push(image);
+
+
+    // Show thumbnail
+
+    const img = document.createElement("img");
+
+    img.src = image;
+
+    img.width = 100;
+    img.height = 75;
+
+    document.getElementById("preview").appendChild(img);
+
+
+    // Update counter
+
+    document.getElementById("count").innerText =
+        images.length;
+}
+
+function registerStudent() {
+
+    const studentId =
+        document.getElementById("student_id").value;
+
+    const name =
+        document.getElementById("name").value;
+
+
+    if (studentId === "" || name === "") {
+
+        document.getElementById("message").innerText =
+            "Please enter Student ID and Name.";
+
+        return;
+
+    }
+
+
+    const formData = new FormData();
+
+    formData.append("student_id", studentId);
+
+    formData.append("name", name);
+
+    images.forEach(function(image) {
+    formData.append("images[]", image);
+});
+
+    fetch("/register", {
+
+        method: "POST",
+
+        body: formData
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        document.getElementById("message").innerText =
+            data.message;
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -3,44 +3,41 @@ from deepface import DeepFace
 import pickle
 import numpy as np
 import time
-import cv2
-import os
-import csv
-from datetime import datetime
-from deepface import DeepFace
 
-# =========================================================
-# SETTINGS
-# =========================================================
+from preprocess import preprocess_image
+from attendence import mark_attendance
+
 
 EMBEDDINGS_FILE = "embeddings.pkl"
 
-# Lower = stricter recognition
-# Start with 0.35
 DISTANCE_THRESHOLD = 0.35
 
-# Recognition interval
-CHECK_INTERVAL = 0.3
+CHECK_INTERVAL = 0.5
 
 
-# =========================================================
-# LOAD EMBEDDINGS
-# =========================================================
+# =====================================================
+# LOAD DATABASE
+# =====================================================
 
 with open(EMBEDDINGS_FILE, "rb") as file:
+
     database = pickle.load(file)
+
 
 print("ArcFace database loaded.")
 
-print("Registered persons:")
+print("Registered students:")
 
-for person in database:
-    print(" -", person)
+for student_id, data in database.items():
+
+    print(
+        f" - {student_id} : {data['name']}"
+    )
 
 
-# =========================================================
+# =====================================================
 # COSINE DISTANCE
-# =========================================================
+# =====================================================
 
 def cosine_distance(a, b):
 
@@ -53,25 +50,29 @@ def cosine_distance(a, b):
     )
 
     if denominator == 0:
+
         return 1.0
 
     return 1 - (
-        np.dot(a, b) / denominator
+        np.dot(a, b) /
+        denominator
     )
 
 
-# =========================================================
-# RECOGNIZE ONE FACE
-# =========================================================
+# =====================================================
+# RECOGNIZE
+# =====================================================
 
 def recognize_embedding(live_embedding):
 
+    best_student_id = None
     best_name = "UNKNOWN"
+
     best_distance = float("inf")
 
-    for person_name, embeddings in database.items():
+    for student_id, data in database.items():
 
-        for stored_embedding in embeddings:
+        for stored_embedding in data["embeddings"]:
 
             distance = cosine_distance(
                 live_embedding,
@@ -81,75 +82,99 @@ def recognize_embedding(live_embedding):
             if distance < best_distance:
 
                 best_distance = distance
-                best_name = person_name
 
-    # Apply threshold
+                best_student_id = student_id
+
+                best_name = data["name"]
+
 
     if best_distance <= DISTANCE_THRESHOLD:
 
-        return best_name, best_distance
+        return (
+            best_student_id,
+            best_name,
+            best_distance
+        )
 
-    return "UNKNOWN", best_distance
+
+    return (
+        None,
+        "UNKNOWN",
+        best_distance
+    )
 
 
-# =========================================================
+# =====================================================
 # WEBCAM
-# =========================================================
+# =====================================================
 
 camera = cv2.VideoCapture(0)
 
-camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+camera.set(
+    cv2.CAP_PROP_FRAME_WIDTH,
+    640
+)
+
+camera.set(
+    cv2.CAP_PROP_FRAME_HEIGHT,
+    480
+)
+
 
 if not camera.isOpened():
 
-    print("ERROR: Cannot open webcam.")
+    print("Cannot open webcam.")
+
     exit()
 
 
 print("--------------------------------")
-print("MULTI-FACE RECOGNITION STARTED")
+print("ARCFACE MULTI-FACE RECOGNITION")
 print("Press Q to quit")
 print("--------------------------------")
 
 
-# =========================================================
-# VARIABLES
-# =========================================================
-
 last_check = 0
 
-# Store results for each face
 face_results = []
 
 
-# =========================================================
+# Prevent repeated attendance calls
+marked_students = set()
+
+
+# =====================================================
 # MAIN LOOP
-# =========================================================
+# =====================================================
 
 while True:
 
     ret, frame = camera.read()
 
     if not ret:
+
         break
+
 
     current_time = time.time()
 
-
-    # =====================================================
-    # RECOGNIZE ALL FACES
-    # =====================================================
 
     if current_time - last_check >= CHECK_INTERVAL:
 
         last_check = current_time
 
+
         try:
+
+            # Preprocess frame
+            processed_frame = preprocess_image(
+                frame
+            )
+
 
             results = DeepFace.represent(
 
-                img_path=frame,
+                img_path=processed_frame,
 
                 model_name="ArcFace",
 
@@ -168,17 +193,13 @@ while True:
 
 
             # =================================================
-            # PROCESS EVERY DETECTED FACE
+            # PROCESS EACH FACE
             # =================================================
 
             for result in results:
 
-                # Get ArcFace embedding
-
                 embedding = result["embedding"]
 
-
-                # Get face location
 
                 facial_area = result.get(
                     "facial_area",
@@ -186,24 +207,51 @@ while True:
                 )
 
 
-                x = facial_area.get("x", 0)
-                y = facial_area.get("y", 0)
+                x = facial_area.get(
+                    "x", 0
+                )
 
-                w = facial_area.get("w", 0)
-                h = facial_area.get("h", 0)
+                y = facial_area.get(
+                    "y", 0
+                )
 
+                w = facial_area.get(
+                    "w", 0
+                )
 
-                # Ignore very small detections
+                h = facial_area.get(
+                    "h", 0
+                )
+
 
                 if w < 50 or h < 50:
+
                     continue
 
 
-                # Recognize THIS particular face
-
-                name, distance = recognize_embedding(
-                    embedding
+                student_id, name, distance = (
+                    recognize_embedding(
+                        embedding
+                    )
                 )
+
+
+                # =================================================
+                # ATTENDANCE
+                # =================================================
+
+                if student_id is not None:
+
+                    if student_id not in marked_students:
+
+                        mark_attendance(
+                            student_id,
+                            name
+                        )
+
+                        marked_students.add(
+                            student_id
+                        )
 
 
                 new_results.append({
@@ -213,66 +261,65 @@ while True:
                     "w": w,
                     "h": h,
 
-                    "name": name,
+                    "student_id":
+                        student_id,
 
-                    "distance": distance
+                    "name":
+                        name,
+
+                    "distance":
+                        distance
 
                 })
 
-
-            # Replace previous results
 
             face_results = new_results
 
 
         except Exception as e:
 
-            # If no face is detected,
-            # clear the results.
-
             face_results = []
 
 
     # =====================================================
-    # DRAW EACH FACE
+    # DRAW RESULTS
     # =====================================================
 
     for face in face_results:
 
         x = face["x"]
         y = face["y"]
+
         w = face["w"]
         h = face["h"]
 
         name = face["name"]
+
         distance = face["distance"]
 
 
-        # -----------------------------------------------
-        # REGISTERED PERSON
-        # -----------------------------------------------
-
         if name != "UNKNOWN":
 
-            box_color = (0, 255, 0)
+            box_color = (
+                0,
+                255,
+                0
+            )
 
             label = name
 
-
-        # -----------------------------------------------
-        # UNKNOWN PERSON
-        # -----------------------------------------------
-
         else:
 
-            box_color = (0, 0, 255)
+            box_color = (
+                0,
+                0,
+                255
+            )
 
             label = "UNKNOWN"
 
 
-        # =================================================
-        # FACE RECTANGLE
-        # =================================================
+        # Face rectangle
 
         cv2.rectangle(
 
@@ -289,9 +336,7 @@ while True:
         )
 
 
-        # =================================================
-        # LABEL BACKGROUND
-        # =================================================
+        # Label background
 
         cv2.rectangle(
 
@@ -308,9 +353,7 @@ while True:
         )
 
 
-        # =================================================
-        # NAME
-        # =================================================
+        # Name
 
         cv2.putText(
 
@@ -331,17 +374,13 @@ while True:
         )
 
 
-        # =================================================
-        # DISTANCE
-        # =================================================
-
-        distance_text = f"{distance:.2f}"
+        # Distance
 
         cv2.putText(
 
             frame,
 
-            distance_text,
+            f"Distance: {distance:.2f}",
 
             (x, y + h + 20),
 
@@ -364,7 +403,7 @@ while True:
 
         frame,
 
-        "ARCFACE MULTI-FACE RECOGNITION",
+        "ARCFACE FACE RECOGNITION",
 
         (15, 30),
 
@@ -379,13 +418,11 @@ while True:
     )
 
 
-    # Number of faces
-
     cv2.putText(
 
         frame,
 
-        f"Faces detected: {len(face_results)}",
+        f"Faces: {len(face_results)}",
 
         (15, 55),
 
@@ -400,73 +437,16 @@ while True:
     )
 
 
-    # =====================================================
-    # DISPLAY
-    # =====================================================
-
     cv2.imshow(
-
         "Face Recognition",
-
         frame
-
     )
 
-
-    # =====================================================
-    # QUIT
-    # =====================================================
 
     if cv2.waitKey(1) & 0xFF == ord("q"):
 
         break
 
-def mark_attendance(student_id, name):
-    filename = "attendance.csv"
-
-    today = datetime.now().strftime("%Y-%m-%d")
-    current_time = datetime.now().strftime("%H:%M:%S")
-
-    # Create CSV if it doesn't exist
-    if not os.path.exists(filename):
-        with open(filename, "w", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow(["Student_ID", "Name", "Date", "Time"])
-
-    # Check whether student is already marked today
-    already_marked = False
-
-    with open(filename, "r", newline="") as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            if (
-                row["Student_ID"] == str(student_id)
-                and row["Date"] == today
-            ):
-                already_marked = True
-                break
-
-    # Add attendance only if not already marked
-    if not already_marked:
-        with open(filename, "a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([
-                student_id,
-                name,
-                today,
-                current_time
-            ])
-
-        print(f"Attendance marked: {name}")
-
-    else:
-        print(f"{name} already marked today.")
-
-
-# =========================================================
-# RELEASE
-# =========================================================
 
 camera.release()
 

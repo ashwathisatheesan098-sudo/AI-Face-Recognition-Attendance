@@ -10,20 +10,43 @@ database = {}
 print("Building ArcFace embeddings...")
 print("--------------------------------")
 
-for person_name in os.listdir(DATASET_PATH):
+for folder_name in os.listdir(DATASET_PATH):
 
-    person_path = os.path.join(DATASET_PATH, person_name)
+    person_path = os.path.join(
+        DATASET_PATH,
+        folder_name
+    )
 
     if not os.path.isdir(person_path):
         continue
 
+    # Folder format:
+    # 101_Ashwathi
+
+    parts = folder_name.split("_", 1)
+
+    if len(parts) != 2:
+        print(f"Skipping invalid folder: {folder_name}")
+        continue
+
+    student_id = parts[0]
+    name = parts[1]
+
     embeddings = []
 
-    print(f"\nProcessing: {person_name}")
+    print(f"\nProcessing: {student_id} - {name}")
 
     for image_name in os.listdir(person_path):
 
-        image_path = os.path.join(person_path, image_name)
+        image_path = os.path.join(
+            person_path,
+            image_name
+        )
+
+        if not image_name.lower().endswith(
+            (".jpg", ".jpeg", ".png")
+        ):
+            continue
 
         try:
 
@@ -32,7 +55,8 @@ for person_name in os.listdir(DATASET_PATH):
                 model_name="ArcFace",
                 detector_backend="opencv",
                 enforce_detection=True,
-                normalization="ArcFace"
+                normalization="ArcFace",
+                align=True
             )
 
             if len(result) > 0:
@@ -43,22 +67,28 @@ for person_name in os.listdir(DATASET_PATH):
 
                 print(f"  ✓ {image_name}")
 
-        except Exception as e:
+        except Exception:
 
-            print(f"  ✗ {image_name} - face not detected")
+            print(
+                f"  ✗ {image_name} - face not detected"
+            )
 
     if len(embeddings) > 0:
 
-        database[person_name] = embeddings
+        database[student_id] = {
+            "name": name,
+            "embeddings": embeddings
+        }
 
         print(
-            f"Saved {len(embeddings)} embeddings for {person_name}"
+            f"Saved {len(embeddings)} embeddings"
         )
 
-# Save embeddings
+
 with open(EMBEDDINGS_FILE, "wb") as file:
 
     pickle.dump(database, file)
+
 
 print("\n--------------------------------")
 print("Embedding database created!")
