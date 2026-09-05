@@ -113,7 +113,34 @@ def register():
         "success": True,
         "message": f"Registration completed! {count} face images saved."
     })
+@app.route("/attendance")
+def attendance():
 
+    student_id = request.args.get("student_id")
+
+    records = []
+
+    if student_id:
+
+        connection = sqlite3.connect(DATABASE)
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            SELECT student_id, name, date, time
+            FROM attendance
+            WHERE student_id = ?
+            ORDER BY date DESC
+        """, (student_id,))
+
+        records = cursor.fetchall()
+
+        connection.close()
+
+    return render_template(
+        "attendance.html",
+        records=records,
+        student_id=student_id
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

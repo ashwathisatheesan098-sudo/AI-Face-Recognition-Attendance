@@ -50,50 +50,36 @@ def open_dashboard():
     )
     register_button.pack(pady=10)
 
-    # Capture Face Images
-    capture_button = tk.Button(
-        dashboard,
-        text="Capture Face Images",
-        width=25,
-        height=2,
-        font=("Arial", 12),
-        command=lambda: run_module("capture_faces.py")
-    )
-    capture_button.pack(pady=10)
 
     # Build Embeddings
     embedding_button = tk.Button(
-        dashboard,
-        text="Build Face Embeddings",
-        width=25,
-        height=2,
-        font=("Arial", 12),
-        command=lambda: run_module("build_embeddings.py")
-    )
-    embedding_button.pack(pady=10)
+    dashboard,
+    text="Build Face Embeddings",
+    width=25,
+    height=2,
+    font=("Arial", 12),
+    command=lambda: run_module("build_embeddings.py")
+)
 
     # Start Recognition
-    recognition_button = tk.Button(
-        dashboard,
-        text="Start Face Recognition",
-        width=25,
-        height=2,
-        font=("Arial", 12),
-        command=lambda: run_module("recognize_face.py")
-    )
-    recognition_button.pack(pady=10)
+    register_button = tk.Button(
+    dashboard,
+    text="Register Student",
+    width=25,
+    height=2,
+    font=("Arial", 12),
+    command=lambda: os.system("start http://127.0.0.1:5000/")
+)
 
     # View Attendance
     attendance_button = tk.Button(
-        dashboard,
-        text="View Attendance",
-        width=25,
-        height=2,
-        font=("Arial", 12),
-        command=lambda: run_module("view_attendance.py")
-    )
-    attendance_button.pack(pady=10)
-
+    dashboard,
+    text="View Attendance",
+    width=25,
+    height=2,
+    font=("Arial", 12),
+    command=lambda: os.system("start http://127.0.0.1:5000/attendance")
+)
     # Logout
     logout_button = tk.Button(
         dashboard,

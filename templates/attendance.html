@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>View Attendance</title>
+</head>
+
+<body>
+
+    <h1>View Attendance</h1>
+
+    <form method="GET" action="/attendance">
+
+        <input
+            type="text"
+            name="student_id"
+            placeholder="Enter Student ID"
+            required
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    {% if records %}
+
+    <h2>Attendance Records</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+
+        {% for record in records %}
+
+        <tr>
+            <td>{{ record[0] }}</td>
+            <td>{{ record[1] }}</td>
+            <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% elif student_id %}
+
+    <p>No attendance records found.</p>
+
+    {% endif %}
+
+</body>
+
+</html>
