@@ -1,0 +1,196 @@
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Admin Login</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+        }
+
+        .login-container {
+            width: 400px;
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #222;
+        }
+
+        h2 {
+            margin-top: 8px;
+            margin-bottom: 30px;
+
+            font-size: 18px;
+            font-weight: normal;
+
+            color: #666;
+        }
+
+        .input-box {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-bottom: 15px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: #222;
+        }
+
+        .login-button {
+            width: 100%;
+
+            padding: 13px;
+
+            background: #222;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 6px;
+
+            font-size: 16px;
+
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: #444;
+        }
+
+        .error {
+            margin-top: 18px;
+
+            padding: 10px;
+
+            background: #ffe5e5;
+
+            color: #d63031;
+
+            border-radius: 5px;
+
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 25px;
+
+            font-size: 13px;
+
+            color: #999;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="login-container">
+
+        <div class="icon">
+            🔐
+        </div>
+
+        <h1>
+            Face Recognition
+        </h1>
+
+        <h2>
+            Admin Login
+        </h2>
+
+
+        <form method="POST" action="/login">
+
+            <input
+                class="input-box"
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+            >
+
+
+            <input
+                class="input-box"
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+
+            <button
+                class="login-button"
+                type="submit"
+            >
+                Login
+            </button>
+
+        </form>
+
+
+        {% if error %}
+
+            <div class="error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <div class="footer">
+            AI-Based Intelligent Face Recognition System
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
+```

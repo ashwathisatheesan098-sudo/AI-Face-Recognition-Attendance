@@ -1,22 +1,73 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect
 import sqlite3
 import os
 import base64
 import cv2
+import subprocess
+import sys
 
 app = Flask(__name__)
+
+app.secret_key = "face_recognition_secret"
 
 DATABASE = "students.db"
 DATASET_PATH = "dataset"
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username == "admin" and password == "admin123":
+
+            session["admin"] = True
+
+            return redirect("/dashboard")
+
+        return render_template(
+            "login.html",
+            error="Invalid username or password"
+        )
+
+    return render_template("login.html")
+
+
+@app.route("/dashboard")
+def dashboard():
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    return render_template("dashboard.html")
+
+
 @app.route("/")
 def home():
+
+    return redirect("/login")
+
+
+@app.route("/register_student")
+def register_student_page():
+
+    if "admin" not in session:
+        return redirect("/login")
+
     return render_template("register_student.html")
 
 
 @app.route("/register", methods=["POST"])
 def register():
+
+    if "admin" not in session:
+        return jsonify({
+            "success": False,
+            "message": "Please login first."
+        })
 
     student_id = request.form["student_id"]
     name = request.form["name"]
@@ -32,6 +83,7 @@ def register():
     existing = cursor.fetchone()
 
     if existing:
+
         connection.close()
 
         return jsonify({
@@ -48,12 +100,12 @@ def register():
     connection.close()
 
     folder_name = f"{student_id}_{name}"
-    folder_path = os.path.join(DATASET_PATH, folder_name)
+    folder_path = os.path.join(
+        DATASET_PATH,
+        folder_name
+    )
 
     os.makedirs(folder_path, exist_ok=True)
-
-
-    # 👇 PUT THE NEW CODE HERE
 
     images = request.form.getlist("images[]")
 
@@ -108,13 +160,17 @@ def register():
     if os.path.exists("temp.jpg"):
         os.remove("temp.jpg")
 
-
     return jsonify({
         "success": True,
         "message": f"Registration completed! {count} face images saved."
     })
+
+
 @app.route("/attendance")
 def attendance():
+
+    if "admin" not in session:
+        return redirect("/login")
 
     student_id = request.args.get("student_id")
 
@@ -141,6 +197,43 @@ def attendance():
         records=records,
         student_id=student_id
     )
+
+
+@app.route("/build_embeddings")
+def build_embeddings():
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    subprocess.Popen([
+        sys.executable,
+        "build_embeddings.py"
+    ])
+
+    return "Face embeddings building started. Check the terminal."
+
+
+@app.route("/start_recognition")
+def start_recognition():
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    subprocess.Popen([
+        sys.executable,
+        "recognize_face.py"
+    ])
+
+    return "Face recognition started. Check the webcam."
+
+
+@app.route("/logout")
+def logout():
+
+    session.pop("admin", None)
+
+    return redirect("/login")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
