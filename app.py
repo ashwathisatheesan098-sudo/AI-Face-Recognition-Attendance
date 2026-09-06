@@ -53,7 +53,47 @@ def dashboard():
     if "admin" not in session:
         return redirect("/login")
 
-    return render_template("dashboard.html")
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
+
+    # Total students
+    cursor.execute("SELECT COUNT(*) FROM students")
+    total_students = cursor.fetchone()[0]
+
+    # Total attendance records
+    cursor.execute("SELECT COUNT(*) FROM attendance")
+    total_attendance = cursor.fetchone()[0]
+
+    # Today's attendance
+    from datetime import datetime
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    cursor.execute(
+        "SELECT COUNT(*) FROM attendance WHERE date = ?",
+        (today,)
+    )
+
+    today_attendance = cursor.fetchone()[0]
+
+    # Latest attendance records
+    cursor.execute("""
+        SELECT student_id, name, date, time
+        FROM attendance
+        ORDER BY date DESC, time DESC
+        LIMIT 5
+    """)
+
+    latest_attendance = cursor.fetchall()
+
+    connection.close()
+
+    return render_template(
+        "dashboard.html",
+        total_students=total_students,
+        total_attendance=total_attendance,
+        today_attendance=today_attendance,
+        latest_attendance=latest_attendance
+    )
 
 
 # -------------------------------------------------
@@ -432,7 +472,124 @@ def attendance():
         records=records,
         student_id=student_id
     )
+# -------------------------------------------------
+# STUDENT MANAGEMENT
+# -------------------------------------------------
 
+@app.route("/students")
+def students():
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        SELECT
+            student_id,
+            roll_no,
+            name,
+            department,
+            semester,
+            class_name,
+            email
+        FROM students
+        ORDER BY student_id
+    """)
+
+    students = cursor.fetchall()
+
+    connection.close()
+
+    return render_template(
+        "students.html",
+        students=students
+    )
+
+# -------------------------------------------------
+# DELETE STUDENT
+# -------------------------------------------------
+
+@app.route("/delete_student/<student_id>", methods=["POST"])
+def delete_student(student_id):
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
+
+    # Get student folder
+    cursor.execute(
+        "SELECT name FROM students WHERE student_id = ?",
+        (student_id,)
+    )
+
+    student = cursor.fetchone()
+
+    if not student:
+        connection.close()
+        return redirect("/students")
+
+    name = student[0]
+
+    # Delete attendance records
+    cursor.execute(
+        "DELETE FROM attendance WHERE student_id = ?",
+        (student_id,)
+    )
+
+    # Delete image records
+    cursor.execute(
+        "DELETE FROM student_images WHERE student_id = ?",
+        (student_id,)
+    )
+
+    # Delete student
+    cursor.execute(
+        "DELETE FROM students WHERE student_id = ?",
+        (student_id,)
+    )
+
+    connection.commit()
+    connection.close()
+
+    # Delete student's face-image folder
+    safe_name = "".join(
+        character for character in name
+        if character.isalnum() or character in " _-"
+    )
+
+    folder_name = f"{student_id}_{safe_name}"
+    folder_path = os.path.join(
+        DATASET_PATH,
+        folder_name
+    )
+
+    if os.path.exists(folder_path):
+
+        for file_name in os.listdir(folder_path):
+
+            file_path = os.path.join(
+                folder_path,
+                file_name
+            )
+
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+
+        os.rmdir(folder_path)
+
+    # Rebuild embeddings
+    if os.path.exists("embeddings.pkl"):
+
+        subprocess.Popen([
+            sys.executable,
+            "build_embeddings.py"
+        ])
+
+    return redirect("/students")
 
 # -------------------------------------------------
 # BUILD EMBEDDINGS
