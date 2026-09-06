@@ -18,59 +18,6 @@ create_database()
 
 
 # -------------------------------------------------
-# DATABASE SETUP
-# -------------------------------------------------
-
-def create_database():
-
-    connection = sqlite3.connect(DATABASE)
-    cursor = connection.cursor()
-
-    # Student table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students (
-            student_id TEXT PRIMARY KEY,
-            roll_no TEXT,
-            name TEXT NOT NULL,
-            department TEXT,
-            semester TEXT,
-            class_name TEXT,
-            email TEXT
-        )
-    """)
-
-    # Facial image table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS student_images (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            student_id TEXT NOT NULL,
-            image_path TEXT NOT NULL,
-            FOREIGN KEY (student_id)
-            REFERENCES students(student_id)
-        )
-    """)
-
-    # Attendance table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS attendance (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            student_id TEXT,
-            name TEXT,
-            date TEXT,
-            time TEXT,
-            status TEXT,
-            score REAL
-        )
-    """)
-
-    connection.commit()
-    connection.close()
-
-
-create_database()
-
-
-# -------------------------------------------------
 # LOGIN
 # -------------------------------------------------
 
@@ -454,14 +401,12 @@ def attendance():
     if "admin" not in session:
         return redirect("/login")
 
-    student_id = request.args.get("student_id")
+    student_id = request.args.get("student_id", "").strip()
 
-    records = []
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
 
     if student_id:
-
-        connection = sqlite3.connect(DATABASE)
-        cursor = connection.cursor()
 
         cursor.execute("""
             SELECT student_id, name, date, time
@@ -470,9 +415,17 @@ def attendance():
             ORDER BY date DESC, time DESC
         """, (student_id,))
 
-        records = cursor.fetchall()
+    else:
 
-        connection.close()
+        cursor.execute("""
+            SELECT student_id, name, date, time
+            FROM attendance
+            ORDER BY date DESC, time DESC
+        """)
+
+    records = cursor.fetchall()
+
+    connection.close()
 
     return render_template(
         "attendance.html",
