@@ -36,6 +36,19 @@
         </div>
 
 
+        <!-- Roll Number -->
+
+        <div class="form-group">
+
+            <label>Roll No</label>
+
+            <input type="text"
+                   id="roll_no"
+                   placeholder="Enter Roll Number">
+
+        </div>
+
+
         <!-- Student Name -->
 
         <div class="form-group">
@@ -45,6 +58,45 @@
             <input type="text"
                    id="name"
                    placeholder="Enter Student Name">
+
+        </div>
+
+
+        <!-- Department -->
+
+        <div class="form-group">
+
+            <label>Department</label>
+
+            <input type="text"
+                   id="department"
+                   placeholder="Enter Department">
+
+        </div>
+
+
+        <!-- Semester -->
+
+        <div class="form-group">
+
+            <label>Semester</label>
+
+            <input type="text"
+                   id="semester"
+                   placeholder="Enter Semester">
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="form-group">
+
+            <label>Email</label>
+
+            <input type="email"
+                   id="email"
+                   placeholder="Enter Email">
 
         </div>
 
@@ -61,23 +113,36 @@
 
         <br><br>
 
+
+        <!-- Camera Buttons -->
+
         <button type="button"
                 onclick="startCamera()">
             Start Camera
         </button>
-<button type="button"
-        onclick="captureImage()">
-    Capture Image
-</button>
 
-<p>
-    Images Captured:
-    <span id="count">0</span> / 20
-</p>
+        <button type="button"
+                onclick="captureImage()">
+            Capture Image
+        </button>
 
-<canvas id="canvas" style="display:none;"></canvas>
 
-<div id="preview"></div>
+        <!-- Image Counter -->
+
+        <p>
+            Images Captured:
+            <span id="count">0</span> / 20
+        </p>
+
+
+        <canvas id="canvas"
+                style="display:none;">
+        </canvas>
+
+
+        <!-- Image Preview -->
+
+        <div id="preview"></div>
 
 
         <br><br>
@@ -100,6 +165,15 @@
 
 <script>
 
+let images = [];
+
+let cameraStream = null;
+
+
+// -------------------------------------------------
+// START CAMERA
+// -------------------------------------------------
+
 function startCamera() {
 
     navigator.mediaDevices.getUserMedia({
@@ -107,6 +181,8 @@ function startCamera() {
     })
 
     .then(function(stream) {
+
+        cameraStream = stream;
 
         document.getElementById("video").srcObject = stream;
 
@@ -116,29 +192,54 @@ function startCamera() {
 
         console.log(error);
 
-        alert("Camera access denied or camera not available.");
+        alert(
+            "Camera access denied or camera not available."
+        );
 
     });
 
 }
 
-let images = [];
 
+// -------------------------------------------------
+// CAPTURE IMAGE
+// -------------------------------------------------
 
 function captureImage() {
 
     if (images.length >= 20) {
+
         alert("Maximum 20 images reached!");
+
         return;
     }
 
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
+
+    const video =
+        document.getElementById("video");
+
+    const canvas =
+        document.getElementById("canvas");
+
+
+    // Make sure camera is running
+
+    if (video.videoWidth === 0) {
+
+        alert("Please start the camera first.");
+
+        return;
+    }
+
 
     canvas.width = video.videoWidth;
+
     canvas.height = video.videoHeight;
 
-    const context = canvas.getContext("2d");
+
+    const context =
+        canvas.getContext("2d");
+
 
     context.drawImage(
         video,
@@ -148,57 +249,170 @@ function captureImage() {
         canvas.height
     );
 
-    const image = canvas.toDataURL("image/jpeg");
+
+    const image =
+        canvas.toDataURL("image/jpeg");
+
 
     images.push(image);
 
 
-    // Show thumbnail
+    // ---------------------------------------------
+    // SHOW THUMBNAIL
+    // ---------------------------------------------
 
-    const img = document.createElement("img");
+    const img =
+        document.createElement("img");
+
 
     img.src = image;
 
     img.width = 100;
+
     img.height = 75;
 
-    document.getElementById("preview").appendChild(img);
+
+    img.style.margin = "5px";
 
 
-    // Update counter
+    document
+        .getElementById("preview")
+        .appendChild(img);
 
-    document.getElementById("count").innerText =
-        images.length;
+
+    // ---------------------------------------------
+    // UPDATE COUNTER
+    // ---------------------------------------------
+
+    document
+        .getElementById("count")
+        .innerText = images.length;
+
 }
+
+
+// -------------------------------------------------
+// REGISTER STUDENT
+// -------------------------------------------------
 
 function registerStudent() {
 
+
     const studentId =
-        document.getElementById("student_id").value;
+        document.getElementById("student_id").value.trim();
+
+
+    const rollNo =
+        document.getElementById("roll_no").value.trim();
+
 
     const name =
-        document.getElementById("name").value;
+        document.getElementById("name").value.trim();
 
 
-    if (studentId === "" || name === "") {
+    const department =
+        document.getElementById("department").value.trim();
 
-        document.getElementById("message").innerText =
-            "Please enter Student ID and Name.";
+
+    const semester =
+        document.getElementById("semester").value.trim();
+
+
+    const email =
+        document.getElementById("email").value.trim();
+
+
+    // ---------------------------------------------
+    // VALIDATION
+    // ---------------------------------------------
+
+    if (
+        studentId === "" ||
+        rollNo === "" ||
+        name === "" ||
+        department === "" ||
+        semester === "" ||
+        email === ""
+    ) {
+
+        document
+            .getElementById("message")
+            .innerText =
+            "Please fill in all student details.";
 
         return;
-
     }
 
 
+    if (images.length < 5) {
+
+        document
+            .getElementById("message")
+            .innerText =
+            "Please capture at least 5 facial images.";
+
+        return;
+    }
+
+
+    // ---------------------------------------------
+    // CREATE FORM DATA
+    // ---------------------------------------------
+
     const formData = new FormData();
 
-    formData.append("student_id", studentId);
 
-    formData.append("name", name);
+    formData.append(
+        "student_id",
+        studentId
+    );
+
+
+    formData.append(
+        "roll_no",
+        rollNo
+    );
+
+
+    formData.append(
+        "name",
+        name
+    );
+
+
+    formData.append(
+        "department",
+        department
+    );
+
+
+    formData.append(
+        "semester",
+        semester
+    );
+
+
+    formData.append(
+        "email",
+        email
+    );
+
+
+    // Add facial images
 
     images.forEach(function(image) {
-    formData.append("images[]", image);
-});
+
+        formData.append(
+            "images[]",
+            image
+        );
+
+    });
+
+
+    // ---------------------------------------------
+    // SEND TO FLASK
+    // ---------------------------------------------
 
     fetch("/register", {
 
@@ -208,12 +422,58 @@ function registerStudent() {
 
     })
 
+
     .then(response => response.json())
+
 
     .then(data => {
 
-        document.getElementById("message").innerText =
+        document
+            .getElementById("message")
+            .innerText =
             data.message;
+
+
+        if (data.success) {
+
+            // Stop camera
+
+            if (cameraStream) {
+
+                cameraStream
+                    .getTracks()
+                    .forEach(track => track.stop());
+
+            }
+
+
+            // Clear captured images
+
+            images = [];
+
+
+            document
+                .getElementById("count")
+                .innerText = "0";
+
+
+            document
+                .getElementById("preview")
+                .innerHTML = "";
+
+        }
+
+    })
+
+
+    .catch(error => {
+
+        console.log(error);
+
+        document
+            .getElementById("message")
+            .innerText =
+            "Registration failed. Please try again.";
 
     });
 
@@ -225,3 +485,4 @@ function registerStudent() {
 </body>
 
 </html>
+
