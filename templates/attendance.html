@@ -2,12 +2,14 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>View Attendance</title>
+    <title>Attendance</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -21,338 +23,526 @@
             min-height: 100vh;
         }
 
-        /* Header */
+        /* HEADER */
+
         .header {
             background-color: #222;
             color: white;
+
             padding: 22px 40px;
+
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .header h1 {
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 26px;
         }
 
-        .logout-btn {
+        .logout {
             background-color: #ef4b3f;
             color: white;
             text-decoration: none;
-            padding: 12px 22px;
+
+            padding: 11px 20px;
+
             border-radius: 6px;
-            font-size: 16px;
         }
 
-        .logout-btn:hover {
+        .logout:hover {
             background-color: #d63d32;
         }
 
-        /* Main container */
+
+        /* CONTAINER */
+
         .container {
             width: 90%;
             max-width: 1200px;
-            margin: 45px auto;
+
+            margin: 40px auto;
         }
 
-        .page-title {
+
+        /* TITLE */
+
+        .title {
             text-align: center;
-            margin-bottom: 35px;
-        }
 
-        .page-title h2 {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-
-        .page-title p {
-            color: #555;
-            font-size: 17px;
-        }
-
-        /* Search card */
-        .search-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
         }
 
-        .search-card h3 {
-            font-size: 21px;
-            margin-bottom: 18px;
+        .title h2 {
+            font-size: 30px;
+
+            margin-bottom: 8px;
+        }
+
+        .title p {
+            color: #666;
+        }
+
+
+        /* SEARCH BOX */
+
+        .search-box {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            margin-bottom: 30px;
         }
 
         .search-form {
             display: flex;
-            gap: 12px;
+
+            gap: 15px;
+
+            align-items: end;
+
+            flex-wrap: wrap;
         }
 
-        .search-form input {
+        .form-group {
             flex: 1;
-            padding: 13px 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
+
+            min-width: 200px;
         }
 
-        .search-form input:focus {
-            outline: none;
-            border-color: #222;
+        .form-group label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-weight: bold;
         }
+
+        .form-group input {
+            width: 100%;
+
+            padding: 11px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+        }
+
+
+        /* BUTTONS */
 
         .search-btn {
             background-color: #222;
+
             color: white;
+
             border: none;
-            padding: 13px 25px;
+
+            padding: 12px 22px;
+
             border-radius: 6px;
-            font-size: 16px;
+
             cursor: pointer;
+
+            font-size: 15px;
         }
 
         .search-btn:hover {
             background-color: #000;
         }
 
-        /* Attendance card */
+
+        .clear-btn {
+            background-color: #777;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 22px;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+        }
+
+        .clear-btn:hover {
+            background-color: #555;
+        }
+
+
+        .download-btn {
+            background-color: #222;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 22px;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+        }
+
+        .download-btn:hover {
+            background-color: #000;
+        }
+
+
+        /* ATTENDANCE TABLE */
+
         .attendance-card {
-            background-color: white;
+            background: white;
+
             padding: 30px;
+
             border-radius: 12px;
+
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
 
-        .attendance-card h3 {
-            font-size: 21px;
-            margin-bottom: 20px;
-        }
-
-        /* Table */
-        .table-container {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
+
             border-collapse: collapse;
+
+            min-width: 650px;
         }
 
         th {
             background-color: #222;
+
             color: white;
-            padding: 15px;
+
+            padding: 14px;
+
             text-align: left;
-            font-size: 15px;
         }
 
         td {
-            padding: 15px;
+            padding: 14px;
+
             border-bottom: 1px solid #ddd;
-            font-size: 15px;
         }
 
         tr:hover td {
             background-color: #f5f5f5;
         }
 
-        /* No records */
-        .no-records {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
+
+        /* NO RECORDS */
+
+        .empty {
             text-align: center;
+
+            padding: 40px;
+
             color: #666;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
-        /* Back button */
-        .back-section {
+
+        /* BACK BUTTON */
+
+        .back {
             text-align: center;
+
             margin-top: 30px;
         }
 
-        .back-btn {
+        .back a {
             display: inline-block;
+
             background-color: #222;
+
             color: white;
+
             text-decoration: none;
+
             padding: 12px 25px;
+
             border-radius: 6px;
-            font-size: 16px;
         }
 
-        .back-btn:hover {
+        .back a:hover {
             background-color: #000;
         }
 
-        /* Responsive */
-        @media (max-width: 600px) {
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
 
             .header {
                 padding: 20px;
             }
 
             .header h1 {
-                font-size: 21px;
-            }
-
-            .logout-btn {
-                padding: 10px 15px;
-                font-size: 14px;
+                font-size: 20px;
             }
 
             .container {
                 width: 94%;
-                margin: 30px auto;
             }
 
             .search-form {
                 flex-direction: column;
+
+                align-items: stretch;
             }
 
-            .search-btn {
-                width: 100%;
+            .search-btn,
+            .clear-btn,
+            .download-btn {
+                text-align: center;
             }
 
-            .search-card,
             .attendance-card {
                 padding: 20px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
-    <!-- Header -->
+
+    <!-- HEADER -->
+
     <div class="header">
 
-        <h1>Face Recognition Attendance System</h1>
+        <h1>
+            Face Recognition Attendance System
+        </h1>
 
-        <a href="/logout" class="logout-btn">
+        <a href="/logout" class="logout">
             Logout
         </a>
 
     </div>
 
 
-    <!-- Main Content -->
+
+    <!-- MAIN CONTAINER -->
+
     <div class="container">
 
-        <!-- Page Title -->
-        <div class="page-title">
 
-            <h2>📊 View Attendance</h2>
+        <!-- TITLE -->
+
+        <div class="title">
+
+            <h2>
+                📊 View Attendance
+            </h2>
 
             <p>
-                Search and view student attendance records
+                Search and filter attendance records
             </p>
 
         </div>
 
 
-        <!-- Search -->
-        <div class="search-card">
 
-            <h3>🔍 Search Attendance</h3>
+        <!-- SEARCH BOX -->
 
-            <form method="GET" action="/attendance" class="search-form">
+        <div class="search-box">
 
-                <input
-                    type="text"
-                    name="student_id"
-                    placeholder="Enter Student ID"
-                    value="{{ student_id if student_id else '' }}"
-                    required
+            <form
+                method="GET"
+                action="/attendance"
+                class="search-form"
+            >
+
+
+                <!-- STUDENT ID -->
+
+                <div class="form-group">
+
+                    <label for="student_id">
+                        Student ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="student_id"
+                        name="student_id"
+                        placeholder="Enter Student ID"
+                        value="{{ student_id }}"
+                    >
+
+                </div>
+
+
+
+                <!-- DATE -->
+
+                <div class="form-group">
+
+                    <label for="date">
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value="{{ date }}"
+                    >
+
+                </div>
+
+
+
+                <!-- SEARCH BUTTON -->
+
+                <button
+                    type="submit"
+                    class="search-btn"
                 >
-
-                <button type="submit" class="search-btn">
                     Search
                 </button>
+
+
+
+                <!-- CLEAR BUTTON -->
+
+                <a
+                    href="/attendance"
+                    class="clear-btn"
+                >
+                    Clear
+                </a>
+
+
+
+                <!-- DOWNLOAD BUTTON -->
+
+                <a
+                    href="/download_attendance?student_id={{ student_id }}&date={{ date }}"
+                    class="download-btn"
+                >
+                    📥 Download CSV
+                </a>
+
 
             </form>
 
         </div>
 
 
-        <!-- Attendance Records -->
-        {% if records %}
+
+        <!-- ATTENDANCE TABLE -->
 
         <div class="attendance-card">
 
-            <h3>Attendance Records</h3>
 
-            <div class="table-container">
+            {% if records %}
 
-                <table>
+            <table>
 
-                    <thead>
+                <thead>
 
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                        </tr>
+                    <tr>
 
-                    </thead>
+                        <th>
+                            Student ID
+                        </th>
 
-                    <tbody>
+                        <th>
+                            Name
+                        </th>
 
-                        {% for record in records %}
+                        <th>
+                            Date
+                        </th>
 
-                        <tr>
+                        <th>
+                            Time
+                        </th>
 
-                            <td>{{ record[0] }}</td>
+                    </tr>
 
-                            <td>{{ record[1] }}</td>
+                </thead>
 
-                            <td>{{ record[2] }}</td>
 
-                            <td>{{ record[3] }}</td>
+                <tbody>
 
-                        </tr>
+                    {% for record in records %}
 
-                        {% endfor %}
+                    <tr>
 
-                    </tbody>
+                        <td>
+                            {{ record[0] }}
+                        </td>
 
-                </table>
+                        <td>
+                            {{ record[1] }}
+                        </td>
+
+                        <td>
+                            {{ record[2] }}
+                        </td>
+
+                        <td>
+                            {{ record[3] }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            {% else %}
+
+            <div class="empty">
+
+                <h3>
+                    No Attendance Records
+                </h3>
+
+                <p>
+                    No attendance records match your search.
+                </p>
 
             </div>
 
-        </div>
+            {% endif %}
 
-        {% elif student_id %}
-
-        <!-- No Records -->
-        <div class="no-records">
-
-            <h3>No Attendance Records Found</h3>
-
-            <p>
-                No attendance records were found for Student ID:
-                <strong>{{ student_id }}</strong>
-            </p>
 
         </div>
 
-        {% endif %}
 
 
-        <!-- Back to Dashboard -->
-        <div class="back-section">
+        <!-- BACK BUTTON -->
 
-            <a href="/dashboard" class="back-btn">
+        <div class="back">
+
+            <a href="/dashboard">
                 ← Back to Dashboard
             </a>
 
         </div>
 
+
     </div>
+
 
 </body>
 

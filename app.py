@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect
+from flask import Flask, render_template, request, jsonify, session, redirect, send_file
 import sqlite3
 import os
 import base64
@@ -442,26 +442,32 @@ def attendance():
         return redirect("/login")
 
     student_id = request.args.get("student_id", "").strip()
+    date = request.args.get("date", "").strip()
 
     connection = sqlite3.connect(DATABASE)
     cursor = connection.cursor()
 
+    query = """
+        SELECT student_id, name, date, time
+        FROM attendance
+        WHERE 1=1
+    """
+
+    parameters = []
+
+    # Filter by Student ID
     if student_id:
+        query += " AND student_id = ?"
+        parameters.append(student_id)
 
-        cursor.execute("""
-            SELECT student_id, name, date, time
-            FROM attendance
-            WHERE student_id = ?
-            ORDER BY date DESC, time DESC
-        """, (student_id,))
+    # Filter by Date
+    if date:
+        query += " AND date = ?"
+        parameters.append(date)
 
-    else:
+    query += " ORDER BY date DESC, time DESC"
 
-        cursor.execute("""
-            SELECT student_id, name, date, time
-            FROM attendance
-            ORDER BY date DESC, time DESC
-        """)
+    cursor.execute(query, parameters)
 
     records = cursor.fetchall()
 
@@ -470,8 +476,73 @@ def attendance():
     return render_template(
         "attendance.html",
         records=records,
-        student_id=student_id
+        student_id=student_id,
+        date=date
     )
+
+# -------------------------------------------------
+# DOWNLOAD ATTENDANCE REPORT
+# -------------------------------------------------
+
+@app.route("/download_attendance")
+def download_attendance():
+
+    if "admin" not in session:
+        return redirect("/login")
+
+    student_id = request.args.get("student_id", "").strip()
+    date = request.args.get("date", "").strip()
+
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
+
+    query = """
+        SELECT student_id, name, date, time
+        FROM attendance
+        WHERE 1=1
+    """
+
+    parameters = []
+
+    if student_id:
+        query += " AND student_id = ?"
+        parameters.append(student_id)
+
+    if date:
+        query += " AND date = ?"
+        parameters.append(date)
+
+    query += " ORDER BY date DESC, time DESC"
+
+    cursor.execute(query, parameters)
+
+    records = cursor.fetchall()
+
+    connection.close()
+
+    # Create CSV file
+    import csv
+
+    file_name = "attendance_report.csv"
+
+    with open(file_name, "w", newline="") as file:
+
+        writer = csv.writer(file)
+
+        writer.writerow([
+            "Student ID",
+            "Name",
+            "Date",
+            "Time"
+        ])
+
+        writer.writerows(records)
+
+    return send_file(
+        file_name,
+        as_attachment=True
+    )
+
 # -------------------------------------------------
 # STUDENT MANAGEMENT
 # -------------------------------------------------
