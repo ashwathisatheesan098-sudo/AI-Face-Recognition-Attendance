@@ -1,166 +1,731 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Student Registration</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/registration.css') }}">
+   <style>
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6f8;
+    color: #171717;
+    min-height: 100vh;
+}
+
+/* TOP BAR */
+
+.topbar {
+    height: 62px;
+    background: #111;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+}
+
+.brand h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.brand p {
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #ddd;
+
+    border: 1px solid #444;
+
+    padding: 8px 13px;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+}
+
+.back-btn:hover {
+    background: #292929;
+    color: white;
+}
+
+
+/* MAIN */
+
+.container {
+    max-width: 1150px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.page-heading {
+    margin-bottom: 17px;
+}
+
+.page-heading h1 {
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.page-heading p {
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* LAYOUT */
+
+.registration-layout {
+    display: grid;
+
+    grid-template-columns: 0.9fr 1.1fr;
+
+    gap: 17px;
+
+    align-items: start;
+}
+
+
+/* CARD */
+
+.card {
+    background: white;
+
+    border-radius: 11px;
+
+    padding: 20px;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+
+    border: 1px solid #eee;
+}
+
+.card-heading {
+    margin-bottom: 16px;
+}
+
+.card-heading h2 {
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.card-heading p {
+    font-size: 12px;
+    color: #888;
+}
+
+
+/* FORM */
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #555;
+
+    margin-bottom: 6px;
+}
+
+.input-box {
+    width: 100%;
+
+    padding: 10px 11px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+    background: #fafafa;
+
+    font-size: 13px;
+}
+
+.input-box:focus {
+    outline: none;
+
+    background: white;
+
+    border-color: #111;
+
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+
+.form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+
+/* CAMERA */
+
+.camera-box {
+    width: 100%;
+
+    background: #111;
+
+    border-radius: 8px;
+
+    padding: 5px;
+
+    margin-bottom: 9px;
+}
+
+#video {
+    width: 100%;
+
+    height: 220px;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 5px;
+
+    background: #181818;
+}
+
+
+/* CAMERA BUTTONS */
+
+.camera-buttons {
+    display: flex;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+.camera-btn {
+    flex: 1;
+
+    padding: 9px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.start-btn {
+    background: #eee;
+
+    color: #222;
+}
+
+.start-btn:hover {
+    background: #ddd;
+}
+
+.capture-btn {
+    background: #111;
+
+    color: white;
+}
+
+.capture-btn:hover {
+    background: #333;
+}
+
+
+/* COUNTER */
+
+.capture-info {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 8px 11px;
+
+    background: #f7f7f7;
+
+    border-radius: 6px;
+
+    margin-bottom: 9px;
+}
+
+.capture-info span {
+    font-size: 11px;
+
+    color: #777;
+}
+
+#count {
+    color: #111;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+/* PREVIEW */
+
+.preview-title {
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #555;
+
+    margin-bottom: 6px;
+}
+
+#preview {
+    display: grid;
+
+    grid-template-columns: repeat(10, 1fr);
+
+    gap: 4px;
+
+    min-height: 48px;
+
+    padding: 5px;
+
+    background: #fafafa;
+
+    border: 1px dashed #ddd;
+
+    border-radius: 6px;
+}
+
+#preview img {
+    width: 100%;
+
+    height: 40px;
+
+    object-fit: cover;
+
+    border-radius: 3px;
+
+    margin: 0 !important;
+
+    border: 1px solid #ddd;
+}
+
+
+/* REGISTER */
+
+.register-button {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    background: #111;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.register-button:hover {
+    background: #333;
+
+    transform: translateY(-1px);
+}
+
+
+/* MESSAGE */
+
+#message {
+    margin-top: 8px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    color: #555;
+
+    min-height: 15px;
+}
+
+
+/* REQUIREMENT */
+
+.requirement {
+    margin-top: 12px;
+
+    padding: 9px;
+
+    background: #f7f7f7;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    color: #777;
+
+    line-height: 1.45;
+}
+
+.requirement strong {
+    color: #444;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+    .registration-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #preview {
+        grid-template-columns: repeat(10, 1fr);
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+    #video {
+        height: 230px;
+    }
+
+    #preview {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
+
+<!-- TOP BAR -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <h2>Face Recognition Attendance System</h2>
+
+        <p>AI-Powered Attendance</p>
+
+    </div>
+
+
+    <a href="/dashboard" class="back-btn">
+        ← Dashboard
+    </a>
+
+</header>
+
+
+
+<!-- MAIN -->
+
 <div class="container">
 
-    <div class="card">
+
+    <div class="page-heading">
 
         <h1>Student Registration</h1>
 
-        <p class="subtitle">
-            Register a student for face recognition
-        </p>
-
-
-        <!-- Student ID -->
-
-        <div class="form-group">
-
-            <label>Student ID</label>
-
-            <input type="text"
-                   id="student_id"
-                   placeholder="Enter Student ID">
-
-        </div>
-
-
-        <!-- Roll Number -->
-
-        <div class="form-group">
-
-            <label>Roll No</label>
-
-            <input type="text"
-                   id="roll_no"
-                   placeholder="Enter Roll Number">
-
-        </div>
-
-
-        <!-- Student Name -->
-
-        <div class="form-group">
-
-            <label>Student Name</label>
-
-            <input type="text"
-                   id="name"
-                   placeholder="Enter Student Name">
-
-        </div>
-
-
-        <!-- Department -->
-
-        <div class="form-group">
-
-            <label>Department</label>
-
-            <input type="text"
-                   id="department"
-                   placeholder="Enter Department">
-
-        </div>
-
-
-        <!-- Semester -->
-
-        <div class="form-group">
-
-            <label>Semester</label>
-
-            <input type="text"
-                   id="semester"
-                   placeholder="Enter Semester">
-
-        </div>
-
-
-        <!-- Email -->
-
-        <div class="form-group">
-
-            <label>Email</label>
-
-            <input type="email"
-                   id="email"
-                   placeholder="Enter Email">
-
-        </div>
-
-
-        <!-- Camera -->
-
-        <h2>Face Capture</h2>
-
-        <video id="video"
-               width="400"
-               height="300"
-               autoplay>
-        </video>
-
-        <br><br>
-
-
-        <!-- Camera Buttons -->
-
-        <button type="button"
-                onclick="startCamera()">
-            Start Camera
-        </button>
-
-        <button type="button"
-                onclick="captureImage()">
-            Capture Image
-        </button>
-
-
-        <!-- Image Counter -->
-
         <p>
-            Images Captured:
-            <span id="count">0</span> / 20
+            Register a new student and capture facial images for recognition.
         </p>
 
+    </div>
 
-        <canvas id="canvas"
+
+
+    <div class="registration-layout">
+
+
+        <!-- STUDENT DETAILS -->
+
+        <div class="card">
+
+            <div class="card-heading">
+
+                <h2>👤 Student Details</h2>
+
+                <p>Enter the student's information below.</p>
+
+            </div>
+
+
+            <!-- Student ID -->
+
+            <div class="form-group">
+
+                <label>Student ID</label>
+
+                <input
+                    class="input-box"
+                    type="text"
+                    id="student_id"
+                    placeholder="Enter Student ID"
+                >
+
+            </div>
+
+
+            <!-- Roll + Semester -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Roll No</label>
+
+                    <input
+                        class="input-box"
+                        type="text"
+                        id="roll_no"
+                        placeholder="Enter Roll Number"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Semester</label>
+
+                    <input
+                        class="input-box"
+                        type="text"
+                        id="semester"
+                        placeholder="Enter Semester"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Name -->
+
+            <div class="form-group">
+
+                <label>Student Name</label>
+
+                <input
+                    class="input-box"
+                    type="text"
+                    id="name"
+                    placeholder="Enter Student Name"
+                >
+
+            </div>
+
+
+            <!-- Department -->
+
+            <div class="form-group">
+
+                <label>Department</label>
+
+                <input
+                    class="input-box"
+                    type="text"
+                    id="department"
+                    placeholder="Enter Department"
+                >
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    class="input-box"
+                    type="email"
+                    id="email"
+                    placeholder="Enter Email Address"
+                >
+
+            </div>
+
+
+            <div class="requirement">
+
+                <strong>Registration requirement</strong><br>
+
+                Please provide all student details and capture at least
+                <strong>5 facial images</strong> before registering.
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FACE CAPTURE -->
+
+        <div class="card">
+
+            <div class="card-heading">
+
+                <h2>📷 Face Capture</h2>
+
+                <p>
+                    Capture multiple facial images for accurate recognition.
+                </p>
+
+            </div>
+
+
+            <!-- CAMERA -->
+
+            <div class="camera-box">
+
+                <video
+                    id="video"
+                    autoplay>
+                </video>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="camera-buttons">
+
+                <button
+                    type="button"
+                    class="camera-btn start-btn"
+                    onclick="startCamera()">
+
+                    ▶ Start Camera
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="camera-btn capture-btn"
+                    onclick="captureImage()">
+
+                    📸 Capture Image
+
+                </button>
+
+            </div>
+
+
+            <!-- COUNTER -->
+
+            <div class="capture-info">
+
+                <span>
+                    Facial Images Captured
+                </span>
+
+                <span>
+                    <strong id="count">0</strong> / 20
+                </span>
+
+            </div>
+
+
+            <canvas
+                id="canvas"
                 style="display:none;">
-        </canvas>
+            </canvas>
 
 
-        <!-- Image Preview -->
+            <!-- PREVIEW -->
 
-        <div id="preview"></div>
+            <div class="preview-title">
+                Captured Images
+            </div>
 
 
-        <br><br>
+            <div id="preview">
+
+                <!-- Images appear here -->
+
+            </div>
 
 
-        <!-- Register -->
+            <!-- REGISTER -->
 
-        <button type="button"
+            <button
+                type="button"
+                class="register-button"
                 onclick="registerStudent()">
-            Register Student
-        </button>
+
+                Register Student →
+
+            </button>
 
 
-        <p id="message"></p>
+            <p id="message"></p>
+
+        </div>
 
     </div>
 
 </div>
+
 
 
 <script>
@@ -222,8 +787,6 @@ function captureImage() {
         document.getElementById("canvas");
 
 
-    // Make sure camera is running
-
     if (video.videoWidth === 0) {
 
         alert("Please start the camera first.");
@@ -257,32 +820,17 @@ function captureImage() {
     images.push(image);
 
 
-    // ---------------------------------------------
-    // SHOW THUMBNAIL
-    // ---------------------------------------------
-
     const img =
         document.createElement("img");
 
 
     img.src = image;
 
-    img.width = 100;
-
-    img.height = 75;
-
-
-    img.style.margin = "5px";
-
 
     document
         .getElementById("preview")
         .appendChild(img);
 
-
-    // ---------------------------------------------
-    // UPDATE COUNTER
-    // ---------------------------------------------
 
     document
         .getElementById("count")
@@ -296,7 +844,6 @@ function captureImage() {
 // -------------------------------------------------
 
 function registerStudent() {
-
 
     const studentId =
         document.getElementById("student_id").value.trim();
@@ -322,9 +869,7 @@ function registerStudent() {
         document.getElementById("email").value.trim();
 
 
-    // ---------------------------------------------
     // VALIDATION
-    // ---------------------------------------------
 
     if (
         studentId === "" ||
@@ -355,9 +900,7 @@ function registerStudent() {
     }
 
 
-    // ---------------------------------------------
-    // CREATE FORM DATA
-    // ---------------------------------------------
+    // FORM DATA
 
     const formData = new FormData();
 
@@ -398,8 +941,6 @@ function registerStudent() {
     );
 
 
-    // Add facial images
-
     images.forEach(function(image) {
 
         formData.append(
@@ -410,9 +951,7 @@ function registerStudent() {
     });
 
 
-    // ---------------------------------------------
     // SEND TO FLASK
-    // ---------------------------------------------
 
     fetch("/register", {
 
@@ -436,8 +975,6 @@ function registerStudent() {
 
         if (data.success) {
 
-            // Stop camera
-
             if (cameraStream) {
 
                 cameraStream
@@ -446,8 +983,6 @@ function registerStudent() {
 
             }
 
-
-            // Clear captured images
 
             images = [];
 
@@ -485,4 +1020,3 @@ function registerStudent() {
 </body>
 
 </html>
-

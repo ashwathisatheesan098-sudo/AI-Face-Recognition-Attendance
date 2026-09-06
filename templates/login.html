@@ -1,133 +1,215 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Admin Login</title>
 
     <style>
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
 
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
 
-            min-height: 100vh;
+            color: #171717;
         }
 
+        /* MAIN LOGIN CARD */
+
         .login-container {
-            width: 400px;
+            width: 390px;
             background: white;
 
-            padding: 40px;
+            padding: 38px 35px 30px;
 
-            border-radius: 12px;
+            border-radius: 14px;
 
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 
             text-align: center;
         }
 
+        /* ICON */
+
         .icon {
-            font-size: 50px;
-            margin-bottom: 10px;
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #111;
+            color: white;
+
+            border-radius: 12px;
+
+            font-size: 27px;
         }
+
+        /* HEADINGS */
 
         h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #222;
+            font-size: 22px;
+            font-weight: 600;
+
+            margin-bottom: 6px;
         }
 
-        h2 {
-            margin-top: 8px;
-            margin-bottom: 30px;
+        .subtitle {
+            color: #888;
+            font-size: 13px;
 
-            font-size: 18px;
-            font-weight: normal;
+            margin-bottom: 28px;
+        }
 
-            color: #666;
+        /* INPUT */
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 17px;
+        }
+
+        .input-group label {
+            display: block;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #555;
+
+            margin-bottom: 7px;
         }
 
         .input-box {
             width: 100%;
 
-            padding: 13px;
-
-            margin-bottom: 15px;
+            padding: 12px 13px;
 
             border: 1px solid #ddd;
 
-            border-radius: 6px;
+            border-radius: 7px;
 
-            font-size: 15px;
+            font-size: 13px;
+
+            background: #fafafa;
+
+            transition: 0.2s;
         }
 
         .input-box:focus {
             outline: none;
-            border-color: #222;
+
+            background: white;
+
+            border-color: #111;
+
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
         }
+
+        /* LOGIN BUTTON */
 
         .login-button {
             width: 100%;
 
-            padding: 13px;
+            padding: 12px;
 
-            background: #222;
+            margin-top: 5px;
+
+            background: #111;
 
             color: white;
 
             border: none;
 
-            border-radius: 6px;
+            border-radius: 7px;
 
-            font-size: 16px;
+            font-size: 13px;
+            font-weight: 600;
 
             cursor: pointer;
+
+            transition: 0.2s;
         }
 
         .login-button:hover {
-            background: #444;
+            background: #2b2b2b;
+
+            transform: translateY(-1px);
         }
 
+        /* ERROR */
+
         .error {
-            margin-top: 18px;
+            margin-top: 17px;
 
             padding: 10px;
 
-            background: #ffe5e5;
+            background: #fff0f0;
 
             color: #d63031;
 
-            border-radius: 5px;
+            border: 1px solid #ffd6d6;
 
-            font-size: 14px;
+            border-radius: 7px;
+
+            font-size: 12px;
         }
+
+        /* FOOTER */
 
         .footer {
             margin-top: 25px;
 
-            font-size: 13px;
+            padding-top: 18px;
+
+            border-top: 1px solid #eee;
+
+            font-size: 11px;
 
             color: #999;
+
+            line-height: 1.5;
+        }
+
+        .footer strong {
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 500px) {
+
+            .login-container {
+                width: calc(100% - 30px);
+
+                padding: 32px 25px 25px;
+            }
+
         }
 
     </style>
 
 </head>
 
-
 <body>
-
 
     <div class="login-container">
 
@@ -135,40 +217,49 @@
             🔐
         </div>
 
-        <h1>
-            Face Recognition
-        </h1>
+        <h1>Face Recognition</h1>
 
-        <h2>
+        <p class="subtitle">
             Admin Login
-        </h2>
-
+        </p>
 
         <form method="POST" action="/login">
 
-            <input
-                class="input-box"
-                type="text"
-                name="username"
-                placeholder="Username"
-                required
-            >
+            <div class="input-group">
+
+                <label>Username</label>
+
+                <input
+                    class="input-box"
+                    type="text"
+                    name="username"
+                    placeholder="Enter your username"
+                    required
+                >
+
+            </div>
 
 
-            <input
-                class="input-box"
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-            >
+            <div class="input-group">
+
+                <label>Password</label>
+
+                <input
+                    class="input-box"
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
 
 
             <button
                 class="login-button"
                 type="submit"
             >
-                Login
+                Login →
             </button>
 
         </form>
@@ -176,19 +267,24 @@
 
         {% if error %}
 
-            <div class="error">
-                {{ error }}
-            </div>
+        <div class="error">
+            {{ error }}
+        </div>
 
         {% endif %}
 
 
         <div class="footer">
-            AI-Based Intelligent Face Recognition System
+
+            <strong>AI-Based Intelligent Face Recognition System</strong>
+
+            <br>
+
+            Secure Admin Access
+
         </div>
 
     </div>
-
 
 </body>
 

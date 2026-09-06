@@ -1,300 +1,765 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
 
-```
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Manage Students</title>
+    <title>Manage Students</title>
 
-<style>
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
 
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        background-color: #f4f6f8;
-        color: #111;
-        min-height: 100vh;
-    }
-
-    .header {
-        background-color: #222;
-        color: white;
-        padding: 22px 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .header h1 {
-        font-size: 26px;
-    }
-
-    .logout {
-        background-color: #ef4b3f;
-        color: white;
-        text-decoration: none;
-        padding: 11px 20px;
-        border-radius: 6px;
-    }
-
-    .logout:hover {
-        background-color: #d63d32;
-    }
-
-    .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 40px auto;
-    }
-
-    .title {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .title h2 {
-        font-size: 30px;
-        margin-bottom: 8px;
-    }
-
-    .title p {
-        color: #666;
-    }
-
-    .student-card {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 900px;
-    }
-
-    th {
-        background-color: #222;
-        color: white;
-        padding: 14px;
-        text-align: left;
-    }
-
-    td {
-        padding: 14px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    tr:hover td {
-        background-color: #f5f5f5;
-    }
-
-    .delete-btn {
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        padding: 9px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .delete-btn:hover {
-        background-color: #c0392b;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 40px;
-        color: #666;
-    }
-
-    .back {
-        text-align: center;
-        margin-top: 30px;
-    }
-
-    .back a {
-        display: inline-block;
-        background-color: #222;
-        color: white;
-        text-decoration: none;
-        padding: 12px 25px;
-        border-radius: 6px;
-    }
-
-    .back a:hover {
-        background-color: #000;
-    }
-
-    @media (max-width: 600px) {
-
-        .header {
-            padding: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .header h1 {
-            font-size: 20px;
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6f8;
+            color: #171717;
+            min-height: 100vh;
         }
+
+
+        /* TOP BAR */
+
+        .topbar {
+            height: 62px;
+
+            background: #111;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+
+        .brand h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+
+        .brand p {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+
+        .top-btn {
+            text-decoration: none;
+
+            color: #ddd;
+
+            border: 1px solid #444;
+
+            padding: 8px 12px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            transition: 0.2s;
+        }
+
+
+        .top-btn:hover {
+            background: #292929;
+            color: white;
+        }
+
+
+        .logout {
+            color: #ff7770;
+        }
+
+
+        .logout:hover {
+            background: #2b2020;
+            color: #ff9994;
+        }
+
+
+        /* MAIN */
 
         .container {
-            width: 94%;
+            max-width: 1200px;
+
+            margin: 25px auto;
+
+            padding: 0 22px;
         }
+
+
+        /* PAGE HEADING */
+
+        .page-heading {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+
+        .heading-left h1 {
+            font-size: 24px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .heading-left p {
+            color: #888;
+
+            font-size: 12px;
+        }
+
+
+        .register-btn {
+            background: #111;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 9px 14px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .register-btn:hover {
+            background: #333;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* STUDENT CARD */
 
         .student-card {
-            padding: 20px;
+            background: white;
+
+            border-radius: 11px;
+
+            border: 1px solid #eee;
+
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+
+            overflow: hidden;
         }
 
-    }
 
-</style>
-```
+        /* TABLE HEADER */
+
+        .table-header {
+            padding: 17px 20px;
+
+            border-bottom: 1px solid #eee;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .table-title h2 {
+            font-size: 15px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .table-title p {
+            font-size: 10px;
+
+            color: #888;
+        }
+
+
+        .student-count {
+            background: #f1f1f1;
+
+            padding: 6px 10px;
+
+            border-radius: 15px;
+
+            font-size: 10px;
+
+            color: #555;
+        }
+
+
+        /* TABLE */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 900px;
+        }
+
+
+        th {
+            background: #f7f7f7;
+
+            color: #666;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+
+            padding: 12px 14px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+
+        td {
+            padding: 12px 14px;
+
+            font-size: 11px;
+
+            border-bottom: 1px solid #eee;
+
+            color: #444;
+        }
+
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+
+        .student-id {
+            font-weight: 600;
+
+            color: #111;
+        }
+
+
+        .student-name {
+            font-weight: 600;
+
+            color: #222;
+        }
+
+
+        .department {
+            display: inline-block;
+
+            padding: 4px 7px;
+
+            background: #f1f1f1;
+
+            border-radius: 4px;
+
+            font-size: 9px;
+
+            color: #555;
+        }
+
+
+        .semester {
+            color: #555;
+        }
+
+
+        .email {
+            color: #666;
+        }
+
+
+        /* DELETE */
+
+        .delete-btn {
+            background: #fff0f0;
+
+            color: #d63031;
+
+            border: 1px solid #ffd6d6;
+
+            padding: 6px 10px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .delete-btn:hover {
+            background: #d63031;
+
+            color: white;
+
+            border-color: #d63031;
+        }
+
+
+        /* EMPTY */
+
+        .empty {
+            text-align: center;
+
+            padding: 65px 20px;
+
+            color: #888;
+        }
+
+
+        .empty-icon {
+            width: 50px;
+
+            height: 50px;
+
+            margin: 0 auto 13px;
+
+            background: #f1f1f1;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+        }
+
+
+        .empty h3 {
+            color: #333;
+
+            font-size: 15px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .empty p {
+            font-size: 11px;
+        }
+
+
+        .empty-register {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            background: #111;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 8px 12px;
+
+            border-radius: 5px;
+
+            font-size: 10px;
+        }
+
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #aaa;
+
+            font-size: 10px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+
+            .brand h2 {
+                font-size: 14px;
+            }
+
+
+            .brand p {
+                display: none;
+            }
+
+
+            .top-btn {
+                padding: 7px 9px;
+
+                font-size: 10px;
+            }
+
+
+            .container {
+                padding: 0 12px;
+
+                margin-top: 18px;
+            }
+
+
+            .page-heading {
+                align-items: flex-start;
+
+                gap: 12px;
+
+                flex-direction: column;
+            }
+
+
+            .heading-left h1 {
+                font-size: 21px;
+            }
+
+
+            .student-card {
+                border-radius: 8px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-```
-<!-- HEADER -->
 
-<div class="header">
+<!-- TOP BAR -->
 
-    <h1>Face Recognition Attendance System</h1>
+<header class="topbar">
 
-    <a href="/logout" class="logout">
-        Logout
-    </a>
+    <div class="brand">
 
-</div>
-
-
-<!-- MAIN CONTENT -->
-
-<div class="container">
-
-    <div class="title">
-
-        <h2>👥 Manage Students</h2>
+        <h2>
+            Face Recognition Attendance System
+        </h2>
 
         <p>
-            View and manage registered students
+            AI-Powered Attendance
         </p>
 
     </div>
 
 
+    <div class="top-actions">
+
+        <a href="/dashboard" class="top-btn">
+            ← Dashboard
+        </a>
+
+        <a href="/logout" class="top-btn logout">
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- MAIN -->
+
+<div class="container">
+
+
+    <!-- PAGE HEADING -->
+
+    <div class="page-heading">
+
+        <div class="heading-left">
+
+            <h1>
+                👥 Manage Students
+            </h1>
+
+            <p>
+                View and manage all registered students
+            </p>
+
+        </div>
+
+
+        <a
+            href="/register_student"
+            class="register-btn"
+        >
+            + Register Student
+        </a>
+
+    </div>
+
+
+
+    <!-- STUDENT TABLE -->
+
     <div class="student-card">
+
+
+        <div class="table-header">
+
+            <div class="table-title">
+
+                <h2>
+                    Registered Students
+                </h2>
+
+                <p>
+                    Student information and account management
+                </p>
+
+            </div>
+
+
+            {% if students %}
+
+            <div class="student-count">
+
+                {{ students|length }} Students
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
 
         {% if students %}
 
-        <table>
 
-            <thead>
+        <div class="table-wrapper">
 
-                <tr>
+            <table>
 
-                    <th>Student ID</th>
+                <thead>
 
-                    <th>Roll No</th>
+                    <tr>
 
-                    <th>Name</th>
+                        <th>Student ID</th>
 
-                    <th>Department</th>
+                        <th>Roll No</th>
 
-                    <th>Semester</th>
+                        <th>Name</th>
 
-                    <th>Email</th>
+                        <th>Department</th>
 
-                    <th>Action</th>
+                        <th>Semester</th>
 
-                </tr>
+                        <th>Email</th>
 
-            </thead>
+                        <th>Action</th>
 
-            <tbody>
+                    </tr>
 
-                {% for student in students %}
+                </thead>
 
-                <tr>
 
-                    <td>{{ student[0] }}</td>
+                <tbody>
 
-                    <td>{{ student[1] or '-' }}</td>
 
-                    <td>{{ student[2] }}</td>
+                    {% for student in students %}
 
-                    <td>{{ student[3] or '-' }}</td>
+                    <tr>
 
-                    <td>{{ student[4] or '-' }}</td>
 
-                    <td>{{ student[6] or '-' }}</td>
+                        <td class="student-id">
 
-                    <td>
+                            {{ student[0] }}
 
-                        <form
-                            method="POST"
-                            action="/delete_student/{{ student[0] }}"
-                            onsubmit="return confirm('Are you sure you want to delete this student?');"
-                        >
+                        </td>
 
-                            <button
-                                type="submit"
-                                class="delete-btn"
+
+                        <td>
+
+                            {{ student[1] or '-' }}
+
+                        </td>
+
+
+                        <td class="student-name">
+
+                            {{ student[2] }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if student[3] %}
+
+                            <span class="department">
+
+                                {{ student[3] }}
+
+                            </span>
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td class="semester">
+
+                            {{ student[4] or '-' }}
+
+                        </td>
+
+
+                        <td class="email">
+
+                            {{ student[6] or '-' }}
+
+                        </td>
+
+
+                        <td>
+
+
+                            <form
+                                method="POST"
+                                action="/delete_student/{{ student[0] }}"
+                                onsubmit="return confirm('Are you sure you want to delete this student?');"
                             >
-                                Delete
-                            </button>
 
-                        </form>
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
 
-                    </td>
+                                    Delete
 
-                </tr>
+                                </button>
 
-                {% endfor %}
+                            </form>
 
-            </tbody>
 
-        </table>
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
 
         {% else %}
 
+
+        <!-- EMPTY STATE -->
+
         <div class="empty">
 
-            <h3>No Students Registered</h3>
+            <div class="empty-icon">
+                👥
+            </div>
+
+            <h3>
+                No Students Registered
+            </h3>
 
             <p>
                 Register a student to see them here.
             </p>
 
+
+            <a
+                href="/register_student"
+                class="empty-register"
+            >
+                + Register Student
+            </a>
+
         </div>
+
 
         {% endif %}
 
-    </div>
-
-
-    <div class="back">
-
-        <a href="/dashboard">
-            ← Back to Dashboard
-        </a>
 
     </div>
+
+
+    <div class="footer">
+
+        AI-Based Intelligent Face Recognition System
+
+    </div>
+
 
 </div>
-```
+
 
 </body>
 

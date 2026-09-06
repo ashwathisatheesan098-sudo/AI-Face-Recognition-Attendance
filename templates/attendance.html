@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Attendance</title>
+    <title>Attendance Records</title>
 
     <style>
 
@@ -18,297 +18,450 @@
 
         body {
             font-family: Arial, Helvetica, sans-serif;
-            background-color: #f4f6f8;
+            background: #f5f5f5;
             color: #111;
             min-height: 100vh;
         }
 
-        /* HEADER */
+        /* TOP BAR */
 
-        .header {
-            background-color: #222;
+        .topbar {
+            height: 70px;
+            background: #111;
             color: white;
 
-            padding: 22px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 32px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .top-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .top-links a {
+            text-decoration: none;
+            color: #ddd;
+            font-size: 13px;
+
+            padding: 9px 13px;
+            border-radius: 6px;
+        }
+
+        .top-links a:hover {
+            background: #2b2b2b;
+            color: white;
+        }
+
+        .logout {
+            background: white !important;
+            color: #111 !important;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #eaeaea !important;
+        }
+
+
+        /* MAIN */
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: 32px auto 45px;
+        }
+
+
+        /* PAGE HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+            margin-bottom: 5px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .record-count {
+            background: #111;
+            color: white;
+
+            padding: 9px 14px;
+            border-radius: 6px;
+
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
+        /* FILTER CARD */
+
+        .filter-card {
+            background: white;
+
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+
+            padding: 22px;
+
+            margin-bottom: 22px;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .search-form {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr auto auto auto;
+
+            gap: 12px;
+
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+            color: #444;
+        }
+
+        .form-group input {
+            width: 100%;
+
+            height: 40px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d5d5d5;
+            border-radius: 6px;
+
+            font-size: 13px;
+
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #111;
+        }
+
+
+        /* BUTTONS */
+
+        .search-btn,
+        .clear-btn,
+        .download-btn {
+            height: 40px;
+
+            padding: 0 16px;
+
+            border-radius: 6px;
+
+            font-size: 12px;
+            font-weight: bold;
+
+            text-decoration: none;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+        }
+
+        .search-btn {
+            background: #111;
+            color: white;
+            border: 1px solid #111;
+        }
+
+        .search-btn:hover {
+            background: #333;
+        }
+
+        .clear-btn {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .clear-btn:hover {
+            background: #e5e5e5;
+        }
+
+        .download-btn {
+            background: #111;
+            color: white;
+            border: 1px solid #111;
+        }
+
+        .download-btn:hover {
+            background: #333;
+        }
+
+
+        /* TABLE CARD */
+
+        .attendance-card {
+            background: white;
+
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 18px 22px;
+
+            border-bottom: 1px solid #e8e8e8;
 
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .header h1 {
-            font-size: 26px;
-        }
-
-        .logout {
-            background-color: #ef4b3f;
-            color: white;
-            text-decoration: none;
-
-            padding: 11px 20px;
-
-            border-radius: 6px;
-        }
-
-        .logout:hover {
-            background-color: #d63d32;
-        }
-
-
-        /* CONTAINER */
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-
-            margin: 40px auto;
-        }
-
-
-        /* TITLE */
-
-        .title {
-            text-align: center;
-
-            margin-bottom: 30px;
-        }
-
-        .title h2 {
-            font-size: 30px;
-
-            margin-bottom: 8px;
-        }
-
-        .title p {
-            color: #666;
-        }
-
-
-        /* SEARCH BOX */
-
-        .search-box {
-            background: white;
-
-            padding: 25px;
-
-            border-radius: 12px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-            margin-bottom: 30px;
-        }
-
-        .search-form {
-            display: flex;
-
-            gap: 15px;
-
-            align-items: end;
-
-            flex-wrap: wrap;
-        }
-
-        .form-group {
-            flex: 1;
-
-            min-width: 200px;
-        }
-
-        .form-group label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%;
-
-            padding: 11px;
-
-            border: 1px solid #ccc;
-
-            border-radius: 6px;
-
+        .table-header h2 {
             font-size: 15px;
         }
 
-
-        /* BUTTONS */
-
-        .search-btn {
-            background-color: #222;
-
-            color: white;
-
-            border: none;
-
-            padding: 12px 22px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-size: 15px;
+        .table-header span {
+            font-size: 12px;
+            color: #777;
         }
 
-        .search-btn:hover {
-            background-color: #000;
-        }
-
-
-        .clear-btn {
-            background-color: #777;
-
-            color: white;
-
-            text-decoration: none;
-
-            padding: 12px 22px;
-
-            border-radius: 6px;
-
-            font-size: 15px;
-        }
-
-        .clear-btn:hover {
-            background-color: #555;
-        }
-
-
-        .download-btn {
-            background-color: #222;
-
-            color: white;
-
-            text-decoration: none;
-
-            padding: 12px 22px;
-
-            border-radius: 6px;
-
-            font-size: 15px;
-        }
-
-        .download-btn:hover {
-            background-color: #000;
-        }
-
-
-        /* ATTENDANCE TABLE */
-
-        .attendance-card {
-            background: white;
-
-            padding: 30px;
-
-            border-radius: 12px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
+        .table-wrapper {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
-
             border-collapse: collapse;
-
             min-width: 650px;
         }
 
         th {
-            background-color: #222;
-
+            background: #111;
             color: white;
 
-            padding: 14px;
+            padding: 13px 18px;
 
             text-align: left;
+
+            font-size: 12px;
+            font-weight: bold;
         }
 
         td {
-            padding: 14px;
+            padding: 13px 18px;
 
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
         }
 
-        tr:hover td {
-            background-color: #f5f5f5;
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-id {
+            font-weight: bold;
+        }
+
+        .name {
+            font-weight: 600;
+        }
+
+        .date {
+            color: #555;
+        }
+
+        .time {
+            color: #555;
+        }
+
+        .present-badge {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            background: #eeeeee;
+
+            color: #222;
+
+            font-size: 10px;
+            font-weight: bold;
         }
 
 
-        /* NO RECORDS */
+        /* EMPTY STATE */
 
         .empty {
             text-align: center;
+            padding: 55px 20px;
+        }
 
-            padding: 40px;
+        .empty-icon {
+            width: 48px;
+            height: 48px;
 
-            color: #666;
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #f0f0f0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+        .empty h3 {
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .empty p {
+            font-size: 12px;
+            color: #777;
         }
 
 
-        /* BACK BUTTON */
+        /* FOOTER */
 
-        .back {
+        .footer {
             text-align: center;
 
-            margin-top: 30px;
-        }
+            margin-top: 28px;
 
-        .back a {
-            display: inline-block;
+            color: #999;
 
-            background-color: #222;
-
-            color: white;
-
-            text-decoration: none;
-
-            padding: 12px 25px;
-
-            border-radius: 6px;
-        }
-
-        .back a:hover {
-            background-color: #000;
+            font-size: 11px;
         }
 
 
         /* MOBILE */
 
-        @media (max-width: 700px) {
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .container {
-                width: 94%;
-            }
+        @media (max-width: 900px) {
 
             .search-form {
-                flex-direction: column;
-
-                align-items: stretch;
+                grid-template-columns: 1fr 1fr;
             }
 
             .search-btn,
             .clear-btn,
             .download-btn {
-                text-align: center;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .topbar {
+                height: auto;
+                padding: 16px 20px;
+
+                align-items: flex-start;
+
+                gap: 12px;
             }
 
-            .attendance-card {
-                padding: 20px;
+            .brand-title {
+                font-size: 16px;
             }
 
+            .top-links {
+                gap: 4px;
+            }
+
+            .top-links a {
+                padding: 7px 9px;
+                font-size: 11px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 24px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .page-header h1 {
+                font-size: 21px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-card {
+                padding: 18px;
+            }
+
+            .table-header {
+                padding: 16px;
+            }
+
+            th,
+            td {
+                padding: 12px 14px;
+            }
         }
 
     </style>
@@ -319,46 +472,76 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- TOP BAR -->
 
-    <div class="header">
+    <div class="topbar">
 
-        <h1>
-            Face Recognition Attendance System
-        </h1>
+        <div class="brand">
 
-        <a href="/logout" class="logout">
-            Logout
-        </a>
+            <div class="brand-title">
+                Face Recognition Attendance System
+            </div>
+
+            <div class="brand-subtitle">
+                AI-Powered Attendance
+            </div>
+
+        </div>
+
+
+        <div class="top-links">
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/logout" class="logout">
+                Logout
+            </a>
+
+        </div>
 
     </div>
 
 
 
-    <!-- MAIN CONTAINER -->
+    <!-- MAIN CONTENT -->
 
     <div class="container">
 
 
-        <!-- TITLE -->
+        <!-- PAGE HEADER -->
 
-        <div class="title">
+        <div class="page-header">
 
-            <h2>
-                📊 View Attendance
-            </h2>
+            <div>
 
-            <p>
-                Search and filter attendance records
-            </p>
+                <h1>
+                    Attendance Records
+                </h1>
+
+                <p>
+                    Search, filter and download attendance records
+                </p>
+
+            </div>
+
+            <div class="record-count">
+                {{ records|length }} Records
+            </div>
 
         </div>
 
 
 
-        <!-- SEARCH BOX -->
+        <!-- FILTER CARD -->
 
-        <div class="search-box">
+        <div class="filter-card">
+
+            <div class="filter-title">
+                Filter Attendance
+            </div>
+
 
             <form
                 method="GET"
@@ -406,7 +589,7 @@
 
 
 
-                <!-- SEARCH BUTTON -->
+                <!-- SEARCH -->
 
                 <button
                     type="submit"
@@ -417,7 +600,7 @@
 
 
 
-                <!-- CLEAR BUTTON -->
+                <!-- CLEAR -->
 
                 <a
                     href="/attendance"
@@ -428,13 +611,13 @@
 
 
 
-                <!-- DOWNLOAD BUTTON -->
+                <!-- DOWNLOAD -->
 
                 <a
                     href="/download_attendance?student_id={{ student_id }}&date={{ date }}"
                     class="download-btn"
                 >
-                    📥 Download CSV
+                    ↓ CSV
                 </a>
 
 
@@ -449,76 +632,107 @@
         <div class="attendance-card">
 
 
+            <div class="table-header">
+
+                <h2>
+                    Attendance History
+                </h2>
+
+                <span>
+                    Latest records first
+                </span>
+
+            </div>
+
+
             {% if records %}
 
-            <table>
+            <div class="table-wrapper">
 
-                <thead>
+                <table>
 
-                    <tr>
+                    <thead>
 
-                        <th>
-                            Student ID
-                        </th>
+                        <tr>
 
-                        <th>
-                            Name
-                        </th>
+                            <th>
+                                Student ID
+                            </th>
 
-                        <th>
-                            Date
-                        </th>
+                            <th>
+                                Name
+                            </th>
 
-                        <th>
-                            Time
-                        </th>
+                            <th>
+                                Date
+                            </th>
 
-                    </tr>
+                            <th>
+                                Time
+                            </th>
 
-                </thead>
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
 
 
-                <tbody>
+                    <tbody>
 
-                    {% for record in records %}
+                        {% for record in records %}
 
-                    <tr>
+                        <tr>
 
-                        <td>
-                            {{ record[0] }}
-                        </td>
+                            <td class="student-id">
+                                {{ record[0] }}
+                            </td>
 
-                        <td>
-                            {{ record[1] }}
-                        </td>
+                            <td class="name">
+                                {{ record[1] }}
+                            </td>
 
-                        <td>
-                            {{ record[2] }}
-                        </td>
+                            <td class="date">
+                                {{ record[2] }}
+                            </td>
 
-                        <td>
-                            {{ record[3] }}
-                        </td>
+                            <td class="time">
+                                {{ record[3] }}
+                            </td>
 
-                    </tr>
+                            <td>
+                                <span class="present-badge">
+                                    PRESENT
+                                </span>
+                            </td>
 
-                    {% endfor %}
+                        </tr>
 
-                </tbody>
+                        {% endfor %}
 
-            </table>
+                    </tbody>
+
+                </table>
+
+            </div>
 
 
             {% else %}
 
             <div class="empty">
 
+                <div class="empty-icon">
+                    📋
+                </div>
+
                 <h3>
                     No Attendance Records
                 </h3>
 
                 <p>
-                    No attendance records match your search.
+                    No attendance records match your current search.
                 </p>
 
             </div>
@@ -530,13 +744,13 @@
 
 
 
-        <!-- BACK BUTTON -->
+        <!-- FOOTER -->
 
-        <div class="back">
+        <div class="footer">
 
-            <a href="/dashboard">
-                ← Back to Dashboard
-            </a>
+            AI-Based Intelligent Face Recognition System
+            &nbsp;•&nbsp;
+            Attendance Management
 
         </div>
 
