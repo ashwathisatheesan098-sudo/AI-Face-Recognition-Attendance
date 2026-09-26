@@ -311,7 +311,7 @@ def register():
 
 
             # Reject very blurry images
-            if blur_value < 50:
+            if blur_value < 10:
                 continue
 
 
